@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 
@@ -46,7 +47,14 @@ class PetController extends Controller
 
     public function destroy($id)
     {
-        $this->client->delete("pet/{$id}");
-        return redirect('/pets');
+        try {
+            $response = $this->client->delete("https://petstore.swagger.io/v2/pet/{$id}");
+            return redirect('/pets')->with('success', 'Pet deleted successfully.');
+        } catch (RequestException $e) {
+            if ($e->hasResponse() && $e->getResponse()->getStatusCode() == 404) {
+                return redirect('/pets')->with('error', 'Pet not found.');
+            }
+            return redirect('/pets')->with('error', 'An error occurred while deleting the pet.');
+        }
     }
 }
