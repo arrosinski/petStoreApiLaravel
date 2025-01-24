@@ -1,20 +1,13 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PetController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+Route::get('/pets', [PetController::class, 'index']);
+Route::get('/pets/create', [PetController::class, 'create']);
+Route::post('/pets', [PetController::class, 'store']);
+Route::get('/pets/{id}/edit', [PetController::class, 'edit']);
+Route::put('/pets/{id}', [PetController::class, 'update']);
+Route::delete('/pets/{id}', [PetController::class, 'destroy']);
 
 require __DIR__.'/auth.php';
